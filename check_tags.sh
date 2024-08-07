@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -e
+set -ex
 
 if [[ -z "${GITHUB_TOKEN}" ]]; then
   echo "Will not build because no GITHUB_TOKEN defined"
