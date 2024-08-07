@@ -190,7 +190,12 @@ jobs:
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_bin.sh
         if: env.SHOULD_BUILD == 'yes'
-
+        
+      - name: Check environment variables
+        run: |
+          echo "SHOULD_BUILD: $SHOULD_BUILD"
+          echo "SHOULD_DEPLOY: $SHOULD_DEPLOY"
+          
       - name: Prepare assets
         env:
           SHOULD_BUILD_REH: 'no'
