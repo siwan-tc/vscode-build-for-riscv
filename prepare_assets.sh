@@ -56,7 +56,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
     tar czf "../assets/${APP_NAME}-linux-${VSCODE_ARCH}-${RELEASE_VERSION}.tar.gz" .
     cd ..
   fi
-  SHOULD_BUILD_DEB="yes"
+  
   echo "${SHOULD_BUILD_DEB}"
   if [[ "${SHOULD_BUILD_DEB}" != "no" ]]; then
     echo "Moving DEB"
