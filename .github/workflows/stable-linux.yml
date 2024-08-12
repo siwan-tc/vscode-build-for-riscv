@@ -47,7 +47,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-
+      - name: print    
+        run: echo "$gh_banch"
+        env:
+          gh_banch: ${{ env.GITHUB_BRANCH }}
+          
       - name: Clone VSCode repo
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
