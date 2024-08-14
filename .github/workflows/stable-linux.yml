@@ -100,7 +100,10 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
-        run: sudo apt-get install -y libkrb5-dev
+        run:|
+          sudo sed -i.bak 's|^deb http://mirror/.*|deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse|' /etc/apt/sources.list
+          sudo apt-get update
+          sudo apt-get install -y libkrb5-dev
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
