@@ -14,15 +14,14 @@ on:
         description: Checkout PR
   repository_dispatch:
     types: [stable]
-  # push:
-  #     branches: [ master ]
-  #     paths-ignore:
-  #     - '**/*.md'
-  # pull_request:
-  #   branches: [ master ]
-  #   paths-ignore:
-  #   - '**/*.md'
-
+  push:
+    branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+    - '**/*.md'
 
 env:
   APP_NAME: VSCode
@@ -47,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.GITHUB_BRANCH }}
-          
+
       - name: Clone VSCode repo
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
@@ -58,7 +57,7 @@ jobs:
           GENERATE_ASSETS: ${{ github.event.inputs.generate_assets }}
         run: ./check_cron_or_pr.sh
 
-      - name: Check existing VSCode tags/releases
+      - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_ALL: 'yes'
@@ -100,10 +99,7 @@ jobs:
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Install libkrb5-dev
-        run: |
-          sudo sed -i.bak 's|^deb http://mirror/.*|deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse|' /etc/apt/sources.list
-          sudo apt-get update
-          sudo apt-get install -y libkrb5-dev
+        run: sudo apt-get install -y libkrb5-dev
         if: env.SHOULD_BUILD == 'yes'
 
       - name: Clone VSCode repo
@@ -171,7 +167,7 @@ jobs:
         run: ./install_gh.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      - name: Check existing VSCode tags/releases
+      - name: Check existing VSCodium tags/releases
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHECK_REH: 'no'
@@ -194,12 +190,12 @@ jobs:
           npm_config_arch: ${{ matrix.npm_arch }}
         run: ./package_linux_bin.sh
         if: env.SHOULD_BUILD == 'yes'
-
+        
       - name: Check environment variables
         run: |
           echo "SHOULD_BUILD: $SHOULD_BUILD"
           echo "SHOULD_DEPLOY: $SHOULD_DEPLOY"
-
+          
       - name: Prepare assets
         env:
           SHOULD_BUILD_REH: 'no'
@@ -229,82 +225,82 @@ jobs:
           retention-days: 3
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
-  # reh_linux:
-  #   needs:
-  #     - check
-  #     - compile
-  #   runs-on: ubuntu-20.04
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #       - vscode_arch: riscv64
-  #         npm_arch: riscv64
-  #   env:
-  #     BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
-  #     MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
-  #     MS_TAG: ${{ needs.check.outputs.MS_TAG }}
-  #     RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-  #     SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
-  #     SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
-  #     VSCODE_ARCH: ${{ matrix.vscode_arch }}
-  #   if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
+  reh_linux:
+    needs:
+      - check
+      - compile
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - vscode_arch: riscv64
+          npm_arch: riscv64
+    env:
+      BUILD_SOURCEVERSION: ${{ needs.compile.outputs.BUILD_SOURCEVERSION }}
+      MS_COMMIT: ${{ needs.check.outputs.MS_COMMIT }}
+      MS_TAG: ${{ needs.check.outputs.MS_TAG }}
+      RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
+      SHOULD_BUILD: ${{ needs.check.outputs.SHOULD_BUILD }}
+      SHOULD_DEPLOY: ${{ needs.check.outputs.SHOULD_DEPLOY }}
+      VSCODE_ARCH: ${{ matrix.vscode_arch }}
+    if: needs.check.outputs.SHOULD_BUILD == 'yes' || github.event.inputs.generate_assets == 'true'
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         ref: ${{ env.GITHUB_BRANCH }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_BRANCH }}
 
-  #     - name: Setup Node.js environment
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '18.17'
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17'
 
-  #     - name: Setup Python 3
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: '3.11'
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-  #     - name: Install libkrb5-dev
-  #       run: sudo apt-get install -y libkrb5-dev
+      - name: Install libkrb5-dev
+        run: sudo apt-get install -y libkrb5-dev
 
-  #     - name: Install GH
-  #       run: ./install_gh.sh
-  #       if: env.SHOULD_DEPLOY == 'yes'
+      - name: Install GH
+        run: ./install_gh.sh
+        if: env.SHOULD_DEPLOY == 'yes'
 
-  #     - name: Check existing VSCode tags/releases
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         CHECK_ONLY_REH: 'yes'
-  #       run: ./check_tags.sh
+      - name: Check existing VSCodium tags/releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHECK_ONLY_REH: 'yes'
+        run: ./check_tags.sh
 
-  #     - name: Download vscode artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: vscode
-  #       if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+      - name: Download vscode artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: vscode
+        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
-  #     - name: Build
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         npm_config_arch: ${{ matrix.npm_arch }}
-  #       run: ./package_linux_reh.sh
-  #       if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_arch: ${{ matrix.npm_arch }}
+        run: ./package_linux_reh.sh
+        if: env.SHOULD_BUILD_REH != 'no' || github.event.inputs.generate_assets == 'true'
 
-  #     - name: Release
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-  #         GITHUB_USERNAME: ${{ github.repository_owner }}
-  #       run: ./release.sh
-  #       if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+        run: ./release.sh
+        if: env.SHOULD_BUILD_REH != 'no' && env.SHOULD_DEPLOY == 'yes'
 
-  #     - name: Upload assets
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: reh-linux-${{ matrix.vscode_arch }}
-  #         path: assets/
-  #         retention-days: 3
-  #       if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
+      - name: Upload assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: reh-linux-${{ matrix.vscode_arch }}
+          path: assets/
+          retention-days: 3
+        if: env.SHOULD_DEPLOY == 'no' && github.event.inputs.generate_assets == 'true'
 
   aur:
     needs:
@@ -315,9 +311,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - package_name: vscode
+        - package_name: vscodium
           package_type: stable
-        - package_name: vscode-git
+        - package_name: vscodium-git
           package_type: rolling
     if: needs.check.outputs.SHOULD_DEPLOY == 'yes'
 
@@ -338,7 +334,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RELEASE_VERSION: ${{ needs.check.outputs.RELEASE_VERSION }}
-      SNAP_NAME: code
+      SNAP_NAME: codium
     strategy:
       fail-fast: false
       matrix:
