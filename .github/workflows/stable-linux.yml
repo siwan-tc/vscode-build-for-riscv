@@ -50,7 +50,7 @@ jobs:
       - name: Clone VSCode repo
         env:
           PULL_REQUEST_ID: ${{ github.event.inputs.checkout_pr }}
-        run: ./get_repo.sh
+        run: ./get_repokylin.sh
 
       - name: Check PR or cron
         env:
