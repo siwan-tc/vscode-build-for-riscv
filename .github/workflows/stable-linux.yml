@@ -162,7 +162,13 @@ jobs:
         with:
           ref: ${{ env.GITHUB_BRANCH }}
         if: env.SHOULD_BUILD == 'yes'
-
+        
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17'
+        if: env.SHOULD_BUILD == 'yes'
+        
       - name: Install GH
         run: ./install_gh.sh
         if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
