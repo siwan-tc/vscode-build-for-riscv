@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -e
+set -ex
 
 if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
 	echo "It's a PR"
