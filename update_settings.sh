@@ -1,5 +1,5 @@
 # shellcheck disable=SC1091,2148
-
+set ex
 DEFAULT_TRUE="'default': true"
 DEFAULT_FALSE="'default': false"
 DEFAULT_ON="'default': TelemetryConfiguration.ON"
