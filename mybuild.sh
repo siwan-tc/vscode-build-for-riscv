@@ -27,7 +27,7 @@ export SHOULD_BUILD_TAR=""
 export SHOULD_BUILD_ZIP=""
 export SHOULD_BUILD_SRC=""
 export npm_config_arch="riscv64"
-export GITHUB_TOKEN="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"
+export GITHUB_TOKEN="xxx"
 #使用docker
 #setup node.js environment 18.17.1
 . check_tags.sh
