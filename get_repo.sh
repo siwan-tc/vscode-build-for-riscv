@@ -55,7 +55,7 @@ if [ ! -d "vscode" ]; then
 
   git init -q
   git remote add origin https://github.com/Microsoft/vscode.git
-  git remote set-url origin git@github.com:Microsoft/vscode.git
+  # git remote set-url origin git@github.com:Microsoft/vscode.git
 
 # figure out latest tag by calling MS update API
 
