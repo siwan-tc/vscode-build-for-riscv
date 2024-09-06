@@ -1,38 +1,25 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2129
 
-set -e
+set -ex
 
-if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-	echo "It's a PR"
+# 输出环境变量
+echo "APP_NAME=${APP_NAME}"
+echo "ASSETS_REPOSITORY=${ASSETS_REPOSITORY}"
+echo "BINARY_NAME=${BINARY_NAME}"
+echo "DISABLE_UPDATE=${DISABLE_UPDATE}"
+echo "OS_NAME=${OS_NAME}"
+echo "VERSIONS_REPOSITORY=${VERSIONS_REPOSITORY}"
+echo "VSCODE_QUALITY=${VSCODE_QUALITY}"
+echo "MS_TAG=${MS_TAG}"
+echo "MS_COMMIT=${MS_COMMIT}"
+echo "RELEASE_VERSION=${RELEASE_VERSION}"
+echo "GENERATE_ASSETS=${GENERATE_ASSETS}"
 
-  export SHOULD_BUILD="yes"
-	export SHOULD_DEPLOY="no"
-elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-	echo "It's a Push"
+export SHOULD_BUILD=yes
+export SHOULD_DEPLOY=no
+export VSCODE_QUALITY=stable
 
-	export SHOULD_BUILD="yes"
-	export SHOULD_DEPLOY="no"
-elif [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-  if [[ "${GENERATE_ASSETS}" == "true" ]]; then
-    echo "It will generate the assets"
-
-    export SHOULD_BUILD="yes"
-    export SHOULD_DEPLOY="no"
-  else
-  	echo "It's a Dispatch"
-
-    export SHOULD_DEPLOY="yes"
-  fi
-else
-	echo "It's a Cron"
-
-	export SHOULD_DEPLOY="yes"
-fi
-
-if [[ "${GITHUB_ENV}" ]]; then
-  echo "GITHUB_BRANCH=${GITHUB_BRANCH}" >> "${GITHUB_ENV}"
-  echo "SHOULD_BUILD=${SHOULD_BUILD}" >> "${GITHUB_ENV}"
-  echo "SHOULD_DEPLOY=${SHOULD_DEPLOY}" >> "${GITHUB_ENV}"
-  echo "VSCODE_QUALITY=${VSCODE_QUALITY}" >> "${GITHUB_ENV}"
-fi
+echo SHOULD_BUILD=${SHOULD_BUILD}
+echo SHOULD_DEPLOY=${SHOULD_DEPLOY}
+echo VSCODE_QUALITY=${VSCODE_QUALITY}
